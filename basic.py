@@ -190,9 +190,14 @@ def learn():
             
 
     env = gym.make('CartPole-v0')
+    render = False
+    record = False
+    if record:
+        import gym.wrappers
+        env = gym.wrappers.Monitor(env, "assets/cartpole")
     session = tf.Session()
     model = Model(session)
-    for i_episode in range(1000):
+    for i_episode in range(500):
         observation = env.reset()
         total_reward = 0.0
         while True:
@@ -200,7 +205,8 @@ def learn():
             observation, reward, done, info = env.step(action)
             total_reward += reward
             model.receive_reward(reward)
-            env.render()
+            if render:
+                env.render()
             if done:
                 break
         model.update()
